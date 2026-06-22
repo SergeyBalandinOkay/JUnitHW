@@ -1,12 +1,10 @@
-import com.codeborne.selenide.impl.Arguments;
+import com.codeborne.selenide.CollectionCondition;
+import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvFileSource;
-
-import java.util.List;
-import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
@@ -15,23 +13,37 @@ public class WebTest {
 
 
     @BeforeEach
-    void setUp(){
-        open("https://samcomsys.ru/");
+    void setUp() {
+        Configuration.browserSize = "1920x1080";
+        open("https://chaconne.ru/");
     }
 
-    @CsvFileSource(resources = "/test_data/checkCitiesInPopUpWindow.csv")
-    @ParameterizedTest(name = "Из селлектора выбираем город {0} и переходим на его сайт {1}")
+    @ValueSource(strings = {
+            "Булгаков","Сорокин","Пелевин"
+    })
+    @ParameterizedTest(name = "Отображаются результаты поиска по фамилии {0}")
     @Tag("SMOKE")
-    void checkCitiesInPopUpWindow(String cityName, String expectedLink) {
+    void searchResults(String productCard) {
 
-        $(".confirm").click();
-        $("#cityselection").click();
-        $("#cityselection").selectOption(cityName);
+        $("#search").setValue(productCard).pressEnter();
+        $(".small").shouldHave(text("Поиск"));
 
-
-        $("#footer_center").shouldHave(text(expectedLink));//переделать проверку
     }
 
 
+    @CsvSource(value = {
+            "Булгаков, Булгаков",
+            "Сорокин, Сорокин",
+            "Пелевин, Пелевин"
+    })
+    @ParameterizedTest(name = "Для поискового запроса по фамилии {0} найдены конкретные книги автора {1}")
+    @Tag("SMOKE")
+    void searchResultsWithFullName(String productCard,String resultBooks) {
 
+        $("#search").setValue(productCard).pressEnter();
+        $(".grid-row-height.text-center").shouldHave(text(resultBooks));
+
+
+
+    }
 }

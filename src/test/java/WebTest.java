@@ -1,10 +1,9 @@
-import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Configuration;
+import data.NamePage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
@@ -43,7 +42,12 @@ public class WebTest {
         $("#search").setValue(productCard).pressEnter();
         $(".grid-row-height.text-center").shouldHave(text(resultBooks));
 
+    }
 
-
+    @EnumSource(NamePage.class)
+    @ParameterizedTest
+    void theDesiredPageOpensWhenYouClickTheButton(NamePage namePage){
+        $$(".header-nav a").find(text(namePage.selectionName)).click();
+        $(".page_content").shouldHave(text(namePage.selectionName));
     }
 }

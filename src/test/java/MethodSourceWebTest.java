@@ -1,5 +1,7 @@
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Selenide;
 import data.Language;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,5 +42,9 @@ public class MethodSourceWebTest {
                 .click();
         $$(".header__menu-center.menu.menu_horizontal.svelte-1irsy4n a").filter(visible)
                 .shouldHave(texts(expectedButtons));
+    }
+    @AfterEach
+    void tearDown() {
+        Selenide.closeWebDriver();
     }
 }

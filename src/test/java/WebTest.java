@@ -1,5 +1,7 @@
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Selenide;
 import data.NamePage;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,5 +48,10 @@ public class WebTest {
     void theDesiredPageOpensWhenYouClickTheButton(NamePage namePage) {
         $$(".header-nav a").find(text(namePage.selectionName)).click();
         $(".page_content").shouldHave(text(namePage.selectionName));
+    }
+
+    @AfterEach
+    void tearDown() {
+        Selenide.closeWebDriver();
     }
 }
